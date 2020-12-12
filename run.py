@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 import pandas as pd
 from selenium import webdriver
@@ -49,4 +50,18 @@ for topic in topics:
     )
 
 df = pd.DataFrame.from_dict(di)
+df["created_date"] = df["created_date"].apply(
+    lambda x: x.replace(" GMT+0900 (Japan Standard Time)", "")
+)
+df["created_date"] = df["created_date"].apply(
+    lambda x: datetime.strptime(x, "%a %b %d %Y %H:%M:%S")
+)
+
+df["last_comment"] = df["last_comment"].apply(
+    lambda x: x.replace(" GMT+0900 (Japan Standard Time)", "")
+)
+df["last_comment"] = df["last_comment"].apply(
+    lambda x: datetime.strptime(x, "%a %b %d %Y %H:%M:%S")
+)
+
 df.to_csv("discussion.csv", index=False)
