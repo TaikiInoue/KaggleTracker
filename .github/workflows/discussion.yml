@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  dvc:
+  discussion:
     runs-on: self-hosted
     steps:
       - name: Syncing KaggleTracker repository
