@@ -2,7 +2,7 @@ name: discussion
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/1 * * * *"
 
 jobs:
   discussion:
