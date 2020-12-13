@@ -1,10 +1,8 @@
 name: discussion
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+    - cron: "*/15 * * * *""
 
 jobs:
   discussion:
@@ -28,3 +26,9 @@ jobs:
           DONE_LIST_ID: ${{ secrets.DONE_LIST_ID }}
           TOPICS_LIST_ID: ${{ secrets.TOPICS_LIST_ID }}
         run: python run.py
+      - name: Push discussion.csv
+        run: |
+          git add discussion.csv
+          git commit -m "Update discussion.csv"
+          git push origin main
+
