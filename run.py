@@ -20,15 +20,15 @@ def get_current_df() -> DataFrame:
     driver.get("https://www.kaggle.com/c/cassava-leaf-disease-classification/discussion")
 
     num_topics = driver.find_element_by_xpath("//div[@class='sc-kIpgsX cRxfVQ sc-jRHJzp kqRVCO']")
-    print(f"num_topics: {num_topics}")
     num_topics = int(num_topics.text.split(" ")[0])
 
-    for _ in tqdm(range(100)):
+    for _ in range(100):
 
         topics = driver.find_elements_by_xpath(
             "//*[@id='site-content']/div[2]/div/div[2]/div/div[2]/a"
         )
         ActionChains(driver).move_to_element(topics[-1]).perform()
+        print(len(topics))
         if len(topics) == num_topics:
             break
 
