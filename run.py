@@ -71,7 +71,7 @@ def get_current_df() -> DataFrame:
 
 
 curr_df = get_current_df()
-prev_df = pd.read_csv("discussion.csv")
+prev_df = pd.read_csv("~/actions-runner/csv/discussion.csv")
 
 client = TrelloClient(api_key=os.environ["API_KEY"], api_secret=os.environ["API_SECRET"])
 board = client.get_board(os.environ["BOARD_ID"])
@@ -89,4 +89,4 @@ for card in board.get_list(os.environ["DONE_LIST_ID"]).list_cards():
     if card.desc in df.loc[df["is_updated"], "url"].tolist():
         card.change_list(os.environ["COMMENTS_LIST_ID"])
 
-curr_df.to_csv("discussion.csv", index=False)
+curr_df.to_csv("~/actions-runner/csv/discussion.csv", index=False)
