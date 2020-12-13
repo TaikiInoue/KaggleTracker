@@ -20,6 +20,7 @@ def get_current_df() -> DataFrame:
     driver.get("https://www.kaggle.com/c/cassava-leaf-disease-classification/discussion")
 
     num_topics = driver.find_element_by_xpath("//div[@class='sc-kIpgsX cRxfVQ sc-jRHJzp kqRVCO']")
+    print(f"num_topics: {num_topics}")
     num_topics = int(num_topics.text.split(" ")[0])
 
     for _ in tqdm(range(100)):
