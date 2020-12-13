@@ -20,4 +20,11 @@ jobs:
       - name: Install python requirements
         run: pip install -r requirements.txt
       - name: Update disccusion
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          API_SECRET: ${{ secrets.API_SECRET }}
+          BOARD_ID: ${{ secrets.BOARD_ID }}
+          COMMENTS_LIST_ID: ${{ secrets.COMMENTS_LIST_ID }}
+          DONE_LIST_ID: ${{ secrets.DONE_LIST_ID }}
+          TOPICS_LIST_ID: ${{ secrets.TOPICS_LIST_ID }}
         run: python run.py
