@@ -6,6 +6,7 @@ from pandas import DataFrame
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from tqdm import tqdm
 from trello import TrelloClient
 
 
@@ -21,13 +22,12 @@ def get_current_df() -> DataFrame:
     num_topics = driver.find_element_by_xpath("//div[@class='sc-kIpgsX cRxfVQ sc-jRHJzp kqRVCO']")
     num_topics = int(num_topics.text.split(" ")[0])
 
-    for _ in range(100):
+    for _ in tqdm(range(100)):
 
         topics = driver.find_elements_by_xpath(
             "//*[@id='site-content']/div[2]/div/div[2]/div/div[2]/a"
         )
         ActionChains(driver).move_to_element(topics[-1]).perform()
-        driver.save_screenshot("screenshot.png")
         if len(topics) == num_topics:
             break
 
