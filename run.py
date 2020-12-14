@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import datetime
 
 import pandas as pd
@@ -6,7 +7,6 @@ from pandas import DataFrame
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
-from tqdm import tqdm
 from trello import TrelloClient
 
 
@@ -16,21 +16,24 @@ def get_current_df() -> DataFrame:
     options.add_argument("--headless")
     executable_path = "/usr/local/bin/chromedriver"
     driver = webdriver.Chrome(chrome_options=options, executable_path=executable_path)
-    driver.implicitly_wait(100)
+    driver.implicitly_wait(10)
     driver.get("https://www.kaggle.com/c/cassava-leaf-disease-classification/discussion")
 
     num_topics = driver.find_element_by_xpath("//div[@class='sc-kIpgsX cRxfVQ sc-jRHJzp kqRVCO']")
     num_topics = int(num_topics.text.split(" ")[0])
 
-    for _ in range(100):
+    cnt = 0
+    while True:
 
         topics = driver.find_elements_by_xpath(
             "//*[@id='site-content']/div[2]/div/div[2]/div/div[2]/a"
         )
         ActionChains(driver).move_to_element(topics[-1]).perform()
-        print(len(topics))
+
         if len(topics) == num_topics:
             break
+        if cnt > 100:
+            sys.exit()
 
     di = {"url": [], "title": [], "created_date": [], "last_comment": [], "num_comments": []}
     for topic in topics:
