@@ -24,7 +24,8 @@ def get_current_df() -> DataFrame:
 
     cnt = 0
     while True:
-
+        
+        cnt += 1
         topics = driver.find_elements_by_xpath(
             "//*[@id='site-content']/div[2]/div/div[2]/div/div[2]/a"
         )
