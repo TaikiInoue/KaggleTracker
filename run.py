@@ -7,7 +7,17 @@ from pandas import DataFrame
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from trello import TrelloClient
+
+NUM_TOPICS = "//*[@id='site-content']/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[1]"
+TOPICS = "//*[@id='site-content']/div[2]/div/div[2]/div/div[2]/a"
+TITLE = "div/div[3]/div[1]/p"
+CREATED_DATE = "div/div[3]/div[2]/p/span"
+LAST_COMMENT = "div/div[4]/div[1]/p/p/a/span[2]"
+NUM_COMMENTS = "div/div[4]/div[2]/p"
 
 
 def get_current_df() -> DataFrame:
@@ -19,16 +29,16 @@ def get_current_df() -> DataFrame:
     driver.implicitly_wait(10)
     driver.get("https://www.kaggle.com/c/cassava-leaf-disease-classification/discussion")
 
-    num_topics = driver.find_element_by_xpath("//div[@class='sc-kIpgsX cRxfVQ sc-jRHJzp kqRVCO']")
+    WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.XPATH, NUM_TOPICS)))
+
+    num_topics = driver.find_element_by_xpath(NUM_TOPICS)
     num_topics = int(num_topics.text.split(" ")[0])
 
     cnt = 0
     while True:
-        
+
         cnt += 1
-        topics = driver.find_elements_by_xpath(
-            "//*[@id='site-content']/div[2]/div/div[2]/div/div[2]/a"
-        )
+        topics = driver.find_elements_by_xpath(TOPICS)
         ActionChains(driver).move_to_element(topics[-1]).perform()
 
         if len(topics) == num_topics:
@@ -37,23 +47,13 @@ def get_current_df() -> DataFrame:
             sys.exit()
 
     di = {"url": [], "title": [], "created_date": [], "last_comment": [], "num_comments": []}
-    for topic in topics:
+    for t in topics:
 
-        di["url"].append(
-            topic.get_attribute("href"),
-        )
-        di["title"].append(
-            topic.find_element_by_xpath("div/div[3]/div[1]/p").text,
-        )
-        di["created_date"].append(
-            topic.find_element_by_xpath("div/div[3]/div[2]/p/span").get_attribute("title"),
-        )
-        di["last_comment"].append(
-            topic.find_element_by_xpath("div/div[4]/div[1]/p/p/a/span[2]").get_attribute("title"),
-        )
-        di["num_comments"].append(
-            topic.find_element_by_xpath("div/div[4]/div[2]/p").text,
-        )
+        di["url"].append(t.get_attribute("href"))
+        di["title"].append(t.find_element_by_xpath(TITLE).text)
+        di["created_date"].append(t.find_element_by_xpath(CREATED_DATE).get_attribute("title"))
+        di["last_comment"].append(t.find_element_by_xpath(LAST_COMMENT).get_attribute("title"))
+        di["num_comments"].append(t.find_element_by_xpath(NUM_COMMENTS).text)
 
     driver.quit()
     df = pd.DataFrame.from_dict(di)
