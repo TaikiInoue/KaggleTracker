@@ -85,6 +85,7 @@ url_list = set(curr_df["url"]) - set(prev_df["url"])
 for url in url_list:
     title = curr_df.loc[curr_df["url"] == url, "title"].item()
     board.get_list(os.environ["TOPICS_LIST_ID"]).add_card(name=title, desc=url)
+    print(f"NEW TOPICS: {title}")
 
 # Change card with updated comments from Done to Comments list
 df = pd.merge(curr_df, prev_df, on=["url"])
@@ -92,5 +93,6 @@ df["is_updated"] = df["last_comment_x"] != df["last_comment_y"]
 for card in board.get_list(os.environ["DONE_LIST_ID"]).list_cards():
     if card.desc in df.loc[df["is_updated"], "url"].tolist():
         card.change_list(os.environ["COMMENTS_LIST_ID"])
+        print(f"NEW COMMENTS: {card.name}")
 
 curr_df.to_csv("~/actions-runner/csv/discussion.csv", index=False)
